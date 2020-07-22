@@ -9,15 +9,17 @@
  */
 
 import React from 'react';
+import {Provider} from 'react-redux';
 import UserForm from './screens/Form';
+import store from './store';
 
 declare const global: {HermesInternal: null | {}};
 
 const App = () => {
   return (
-    <>
+    <Provider store={store}>
       <UserForm />
-    </>
+    </Provider>
   );
 };
 

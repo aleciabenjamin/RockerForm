@@ -1,4 +1,9 @@
-export interface IUserForm {}
+export interface IUserForm {
+  userDetails: IFormValues;
+  loadUserData: () => void;
+  handleChange: (name: string, value: string) => void;
+  handleSubmit: () => void;
+}
 
 export interface IFormValues {
   ssn: string;

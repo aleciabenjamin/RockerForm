@@ -1,20 +1,26 @@
 import React, {Fragment, FC} from 'react';
-import {TextInput, Text} from 'react-native';
-import {useField} from 'formik';
+import {TextInput} from 'react-native';
 
-const TextField: FC<any> = ({placeholder, ...props}) => {
-  const [field, meta] = useField(props);
+interface ITextField {
+  name: string;
+  placeholder: string;
+  value: string | number;
+  handleChange: (name: string, value: string) => void;
+}
+
+const TextField: FC<ITextField> = ({
+  name,
+  placeholder,
+  value,
+  handleChange,
+}) => {
   return (
     <Fragment>
       <TextInput
-        value={field.value}
-        onChangeText={field.onChange(props.name)}
-        onBlur={field.onBlur(props.name)}
+        value={value}
+        onChangeText={(text: string) => handleChange(name, text)}
         placeholder={placeholder}
       />
-      {meta.touched && meta.error && (
-        <Text style={{fontSize: 10, color: 'red'}}>{meta.error}</Text>
-      )}
     </Fragment>
   );
 };

@@ -1,25 +1,29 @@
-import React, {Fragment, FC} from 'react';
+import React, {FC} from 'react';
 import {Picker} from '@react-native-community/picker';
-import {useField} from 'formik';
-import {Text} from 'react-native';
 import map from 'lodash/map';
 
-const Select: FC<any> = (props) => {
-  const [field, meta] = useField(props);
+interface IOption {
+  label: string | number;
+  value: string | number;
+}
+
+interface ISelect {
+  name: string;
+  value: string | number;
+  values: IOption[];
+  handleChange: (name: string, value: string) => void;
+}
+
+const Select: FC<ISelect> = ({name, values, value, handleChange}) => {
   return (
-    <Fragment>
-      <Picker
-        selectedValue={field.value}
-        style={{height: 50}}
-        onValueChange={field.onChange(props.name)}>
-        {map(props.values, ({label, value}) => {
-          return <Picker.Item key={value} label={label} value={value} />;
-        })}
-      </Picker>
-      {meta.touched && meta.error && (
-        <Text style={{fontSize: 10, color: 'red'}}>{meta.error}</Text>
-      )}
-    </Fragment>
+    <Picker
+      selectedValue={value}
+      style={{height: 50}}
+      onValueChange={(value: string) => handleChange(name, value)}>
+      {map(values, ({label, value}) => {
+        return <Picker.Item key={value} label={label} value={value} />;
+      })}
+    </Picker>
   );
 };
 
