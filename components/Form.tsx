@@ -1,10 +1,8 @@
 import React, {FC} from 'react';
 import Select from '../elements/Select';
 import TextField from '../elements/TextField';
-import {countryList} from './initialValues';
-import {IFormValues} from '../screens/Form/types';
+import {IFormValues, ICountry} from '../screens/Form/types';
 import {View} from 'react-native';
-import {styles} from '../screens/Form/styles';
 
 interface IErrors {
   ssn?: string;
@@ -15,17 +13,19 @@ interface IErrors {
 
 interface IUserFormFields {
   values: IFormValues;
+  countries: ICountry[];
   errors: IErrors;
   handleChange: (name: string, value: string) => void;
 }
 
 const UserFormFields: FC<IUserFormFields> = ({
   values,
+  countries,
   errors,
   handleChange,
 }) => {
   return (
-    <View style={styles.form}>
+    <View>
       <TextField
         name="ssn"
         placeholder="Social security number"
@@ -49,7 +49,7 @@ const UserFormFields: FC<IUserFormFields> = ({
       />
       <Select
         name="country"
-        values={countryList}
+        values={countries}
         value={values.country}
         error={errors.country}
         handleChange={handleChange}

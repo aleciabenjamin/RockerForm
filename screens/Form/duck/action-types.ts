@@ -1,1 +1,2 @@
 export const SET_USER_DATA = 'SET_USER_DATA';
+export const SET_COUNTRIES_LIST = 'SET_COUNTRIES_LIST';

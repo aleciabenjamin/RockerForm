@@ -52,7 +52,8 @@ const schema = yup.object().shape({
 });
 
 const UserForm: FC<IUserForm> = ({
-  userDetails,
+  formData,
+  countries,
   loadUserData,
   handleChange,
   handleSubmit,
@@ -63,7 +64,7 @@ const UserForm: FC<IUserForm> = ({
   }, []);
   const onSubmit = () => {
     schema
-      .validate(userDetails, {abortEarly: false})
+      .validate(formData, {abortEarly: false})
       .then(() => {
         handleSubmit();
       })
@@ -79,7 +80,8 @@ const UserForm: FC<IUserForm> = ({
   return (
     <View style={styles.container}>
       <FormFields
-        values={userDetails}
+        values={formData}
+        countries={countries}
         errors={errors}
         handleChange={handleChange}
       />
@@ -91,8 +93,10 @@ const UserForm: FC<IUserForm> = ({
 };
 
 const mapStateToProps = (state: any) => {
+  const {formData, countries} = state.userDetails;
   return {
-    userDetails: state.userDetails,
+    formData,
+    countries,
   };
 };
 

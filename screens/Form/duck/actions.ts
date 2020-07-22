@@ -1,6 +1,8 @@
-import {SET_USER_DATA} from './action-types';
-import {IFormValues} from '../types';
+import {SET_USER_DATA, SET_COUNTRIES_LIST} from './action-types';
+import {IFormValues, ICountry} from '../types';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+import map from 'lodash/map';
 import {initialState} from './initialState';
 
 export const setUserForm = (values: IFormValues) => {
@@ -10,22 +12,47 @@ export const setUserForm = (values: IFormValues) => {
   };
 };
 
+export const setCountriesList = (countries: ICountry[]) => {
+  return {
+    type: SET_COUNTRIES_LIST,
+    payload: countries,
+  };
+};
+
 export const loadUserData = () => (dispatch: any) => {
-  AsyncStorage.getItem('formValues')
-    .then((values: any) => {
-      const data = JSON.parse(values);
-      dispatch(setUserForm(data));
-    })
-    .catch(() => {
-      dispatch(setUserForm(initialState));
-    });
+  const fetchFormData = () => {
+    return AsyncStorage.getItem('formValues')
+      .then((values: any) => {
+        const data = JSON.parse(values);
+        return data;
+      })
+      .catch(() => {
+        return initialState;
+      });
+  };
+  const fetchCountriesList = () => {
+    return axios
+      .get('https://restcountries.eu/rest/v2/all')
+      .then(({data}) => {
+        return map(data, ({name}) => {
+          return {label: name, value: name};
+        });
+      })
+      .catch((error) => {
+        return [];
+      });
+  };
+  fetchCountriesList().then((values: ICountry[]) =>
+    dispatch(setCountriesList(values)),
+  );
+  fetchFormData().then((values: IFormValues) => dispatch(setUserForm(values)));
 };
 
 export const handleChange = (name: string, value: string) => (
   dispatch: any,
   getState: any,
 ) => {
-  const userDetails = getState();
+  const {userDetails} = getState();
   const data = {
     ...userDetails,
     [name]: value,
@@ -33,7 +60,6 @@ export const handleChange = (name: string, value: string) => (
   dispatch(setUserForm(data));
   AsyncStorage.setItem('formValues', JSON.stringify(data));
 };
-
 export const handleSubmit = () => (dispatch: any) => {
   console.log('Success');
   dispatch(setUserForm(initialState));

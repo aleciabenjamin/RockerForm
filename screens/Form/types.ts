@@ -1,5 +1,11 @@
+export interface ICountry {
+  label: string;
+  value: string;
+}
+
 export interface IUserForm {
-  userDetails: IFormValues;
+	userDetails: IFormValues;
+	countries: ICountry[];
   loadUserData: () => void;
   handleChange: (name: string, value: string) => void;
   handleSubmit: () => void;
