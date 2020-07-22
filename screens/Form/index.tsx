@@ -1,8 +1,8 @@
 import React, {FC, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
-import {View, Button, Text} from 'react-native';
+import {View, Button} from 'react-native';
 import * as yup from 'yup';
-import map from 'lodash/map';
+import each from 'lodash/each';
 import {handleSubmit, handleChange, loadUserData} from './duck/actions';
 import {styles} from './styles';
 import FormFields from '../../components/Form';
@@ -57,12 +57,11 @@ const UserForm: FC<IUserForm> = ({
   handleChange,
   handleSubmit,
 }) => {
-  const [errors, handleErrors] = useState([]);
+  const [errors, handleErrors] = useState({});
   useEffect(() => {
     loadUserData();
   }, []);
   const onSubmit = () => {
-    handleErrors([]);
     schema
       .validate(userDetails, {abortEarly: false})
       .then(() => {
@@ -70,20 +69,24 @@ const UserForm: FC<IUserForm> = ({
       })
       .catch((err) => {
         handleErrors(err.errors);
+        const obj = {};
+        each(err.inner, (details) => {
+          obj[details.path] = details.message;
+        });
+        handleErrors(obj);
       });
   };
   return (
-    <>
-      <FormFields values={userDetails} handleChange={handleChange} />
-      {map(errors, (error, i) => (
-        <Text key={i} style={styles.alert}>
-          {error}
-        </Text>
-      ))}
+    <View style={styles.container}>
+      <FormFields
+        values={userDetails}
+        errors={errors}
+        handleChange={handleChange}
+      />
       <View style={styles.btn}>
         <Button title="Submit" onPress={onSubmit} />
       </View>
-    </>
+    </View>
   );
 };
 

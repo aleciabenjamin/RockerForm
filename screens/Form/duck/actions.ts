@@ -35,6 +35,7 @@ export const handleChange = (name: string, value: string) => (
 };
 
 export const handleSubmit = () => (dispatch: any) => {
+  console.log('Success');
   dispatch(setUserForm(initialState));
   AsyncStorage.removeItem('formValues');
 };
