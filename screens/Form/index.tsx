@@ -1,11 +1,12 @@
-import React, {FC, Fragment, useEffect} from 'react';
-import {Alert, Button} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Formik, useFormikContext} from 'formik';
+import React, {FC, Fragment, useEffect, useState} from 'react';
+import {Button, View} from 'react-native';
 import * as yup from 'yup';
-import TextField from '../../elements/TextField';
 import Select from '../../elements/Select';
-import {initialValues, countryList} from './initialValues';
+import TextField from '../../elements/TextField';
+import {countryList, initialValues} from './initialValues';
+import {styles} from './styles';
 
 /**
  * ssn validation reference: https://www.etl-tools.com/regular-expressions/is-swedish-person-number.html
@@ -21,13 +22,12 @@ const validate = yup.object().shape({
 const UserFormFields = () => {
   const {isValid, handleSubmit, values} = useFormikContext();
   useEffect(() => {
-    console.log('values', values);
-    AsyncStorage.setItem('formValues', '342342434242432432').then((val) => {
-      console.log('setFOrmvalues::::', val);
-      AsyncStorage.getItem('formValues', (values) => {
-        console.log('getFOrmvalues::::', values);
-      });
-    });
+    const saveData = async () => {
+      if (values !== initialValues) {
+        await AsyncStorage.setItem('formValues', JSON.stringify(values));
+      }
+    };
+    saveData();
   }, [values]);
   return (
     <Fragment>
@@ -41,13 +41,30 @@ const UserFormFields = () => {
 };
 
 const UserForm: FC<any> = () => {
+  const [formValues, handleFormValues] = useState(initialValues);
+  useEffect(() => {
+    const getValues = async () => {
+      const data = await AsyncStorage.getItem('formValues');
+      if (data) {
+        handleFormValues(JSON.parse(data));
+      }
+    };
+    getValues();
+  }, []);
+  const handleSubmit = (values: any) => {
+    AsyncStorage.removeItem('formValues');
+    handleFormValues(initialValues);
+  };
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={(values) => Alert.alert(JSON.stringify(values))}
-      validationSchema={validate}>
-      <UserFormFields />
-    </Formik>
+    <View style={styles.container}>
+      <Formik
+        enableReinitialize={true}
+        initialValues={formValues}
+        onSubmit={handleSubmit}
+        validationSchema={validate}>
+        <UserFormFields />
+      </Formik>
+    </View>
   );
 };
 
