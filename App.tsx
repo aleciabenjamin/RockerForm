@@ -9,14 +9,16 @@
  */
 
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import UserForm from './screens/Form';
 
 declare const global: {HermesInternal: null | {}};
 
 const App = () => {
-	return <></>;
+  return (
+    <>
+      <UserForm />
+    </>
+  );
 };
-
-const styles = StyleSheet.create({});
 
 export default App;
