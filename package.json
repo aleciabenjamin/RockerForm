@@ -10,6 +10,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.11.0",
+    "@react-native-community/picker": "^1.6.5",
     "@types/yup": "^0.29.3",
     "formik": "^2.1.5",
     "react": "16.13.1",

@@ -1,23 +1,44 @@
-import {Formik} from 'formik';
-import React, {FC} from 'react';
-import {Alert, Button, View} from 'react-native';
+import React, {FC, Fragment, useEffect} from 'react';
+import {Alert, Button} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import {Formik, useFormikContext} from 'formik';
 import * as yup from 'yup';
 import TextField from '../../elements/TextField';
-import {styles} from './styles';
+import Select from '../../elements/Select';
+import {initialValues, countryList} from './initialValues';
 
-const initialValues = {
-  ssn: '',
-  phoneNumber: '',
-  email: '',
-  country: '',
-};
-
+/**
+ * ssn validation reference: https://www.etl-tools.com/regular-expressions/is-swedish-person-number.html
+ * phone validation reference: https://www.etl-tools.com/regular-expressions/is-swedish-phone-number.html
+ */
 const validate = yup.object().shape({
-  ssn: yup.string().required(),
-  phoneNumber: yup.string().required(),
-  email: yup.string().email().required(),
-  country: yup.string().required(),
+  ssn: yup.string().required('SSN is required'),
+  phoneNumber: yup.string().required('Phone number is required'),
+  email: yup.string().email().required('Email is required'),
+  country: yup.string().required('Country is required'),
 });
+
+const UserFormFields = () => {
+  const {isValid, handleSubmit, values} = useFormikContext();
+  useEffect(() => {
+    console.log('values', values);
+    AsyncStorage.setItem('formValues', '342342434242432432').then((val) => {
+      console.log('setFOrmvalues::::', val);
+      AsyncStorage.getItem('formValues', (values) => {
+        console.log('getFOrmvalues::::', values);
+      });
+    });
+  }, [values]);
+  return (
+    <Fragment>
+      <TextField name="ssn" placeholder="Social security number" />
+      <TextField name="phoneNumber" placeholder="Phone number" />
+      <TextField name="email" placeholder="Email" />
+      <Select name="country" values={countryList} />
+      <Button title="Submit" disabled={!isValid} onPress={handleSubmit} />
+    </Fragment>
+  );
+};
 
 const UserForm: FC<any> = () => {
   return (
@@ -25,19 +46,7 @@ const UserForm: FC<any> = () => {
       initialValues={initialValues}
       onSubmit={(values) => Alert.alert(JSON.stringify(values))}
       validationSchema={validate}>
-      {(formikProps) => (
-        <View style={styles.container}>
-          <TextField name="ssn" placeholder="Social security number" />
-          <TextField name="phoneNumber" placeholder="Phone number" />
-          <TextField name="email" placeholder="Email" />
-          <TextField name="country" placeholder="Country" />
-          <Button
-            title="Submit"
-            disabled={!formikProps.isValid}
-            onPress={formikProps.handleSubmit}
-          />
-        </View>
-      )}
+      <UserFormFields />
     </Formik>
   );
 };
