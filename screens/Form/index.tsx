@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
-import {View, Button} from 'react-native';
+import {View, Button, TouchableOpacity, Text} from 'react-native';
 import * as yup from 'yup';
 import each from 'lodash/each';
 import {handleSubmit, handleChange, loadUserData} from './duck/actions';
@@ -63,13 +63,13 @@ const UserForm: FC<IUserForm> = ({
     loadUserData();
   }, []);
   const onSubmit = () => {
+    handleErrors([]);
     schema
       .validate(formData, {abortEarly: false})
       .then(() => {
         handleSubmit();
       })
       .catch((err) => {
-        handleErrors(err.errors);
         const obj = {};
         each(err.inner, (details) => {
           obj[details.path] = details.message;
@@ -79,15 +79,18 @@ const UserForm: FC<IUserForm> = ({
   };
   return (
     <View style={styles.container}>
+      <Text style={styles.header}>Hey Rocker!</Text>
       <FormFields
         values={formData}
         countries={countries}
         errors={errors}
         handleChange={handleChange}
       />
-      <View style={styles.btn}>
-        <Button title="Submit" onPress={onSubmit} />
-      </View>
+      <TouchableOpacity style={styles.btn}>
+        <View>
+          <Button title="Submit" onPress={onSubmit} />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

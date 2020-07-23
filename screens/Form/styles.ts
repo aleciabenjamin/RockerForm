@@ -7,9 +7,18 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 3,
     justifyContent: 'center',
   },
+
+  header: {
+    fontSize: 24,
+    color: '#199187',
+    textAlign: 'center',
+    paddingBottom: 30,
+  },
+
   btn: {
     marginLeft: 5,
     marginRight: 5,
-    alignItems: 'center',
+    paddingTop: 30,
+    borderRadius: 2,
   },
 });
