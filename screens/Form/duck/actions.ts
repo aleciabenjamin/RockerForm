@@ -15,7 +15,7 @@ export const setUserForm = (values: IFormValues) => {
 export const setCountriesList = (countries: ICountry[]) => {
   return {
     type: SET_COUNTRIES_LIST,
-    payload: countries,
+    payload: {countries},
   };
 };
 
@@ -38,23 +38,25 @@ export const loadUserData = () => (dispatch: any) => {
           return {label: name, value: name};
         });
       })
-      .catch((error) => {
+      .catch(() => {
         return [];
       });
   };
   fetchCountriesList().then((values: ICountry[]) =>
     dispatch(setCountriesList(values)),
   );
-  fetchFormData().then((values: IFormValues) => dispatch(setUserForm(values)));
+  fetchFormData().then((values: IFormValues) =>
+    dispatch(setUserForm({...initialState.formData, ...values})),
+  );
 };
 
 export const handleChange = (name: string, value: string) => (
   dispatch: any,
   getState: any,
 ) => {
-  const {userDetails} = getState();
+  const {formData} = getState().userDetails;
   const data = {
-    ...userDetails,
+    ...formData,
     [name]: value,
   };
   dispatch(setUserForm(data));
@@ -62,6 +64,6 @@ export const handleChange = (name: string, value: string) => (
 };
 export const handleSubmit = () => (dispatch: any) => {
   console.log('Success');
-  dispatch(setUserForm(initialState));
+  dispatch(setUserForm(initialState.formData));
   AsyncStorage.removeItem('formValues');
 };
