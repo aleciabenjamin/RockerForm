@@ -9,14 +9,18 @@
  */
 
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {Provider} from 'react-redux';
+import UserForm from './screens/Form';
+import store from './store';
 
 declare const global: {HermesInternal: null | {}};
 
 const App = () => {
-	return <></>;
+  return (
+    <Provider store={store}>
+      <UserForm />
+    </Provider>
+  );
 };
-
-const styles = StyleSheet.create({});
 
 export default App;
