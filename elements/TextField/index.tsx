@@ -19,7 +19,7 @@ const TextField: FC<ITextField> = ({
 }) => {
   return (
     <Fragment>
-      <TextInput
+      <TextInput style={styles.textInput}
         value={value}
         onChangeText={(text: string) => handleChange(name, text)}
         placeholder={placeholder}
